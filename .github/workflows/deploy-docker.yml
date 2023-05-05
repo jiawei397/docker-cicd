@@ -12,7 +12,7 @@ jobs:
         run: |
           docker build -t dk.uino.cn/deno/deno_puppeteer:16.2.0-2 -f Dockerfile_puppeteer .
       - name: Login to Registry
-        run: docker login --username=${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
+        run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
       - name: Push Image
         run: |
           docker push dk.uino.cn/deno/deno_puppeteer:16.2.0-2
