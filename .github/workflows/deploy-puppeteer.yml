@@ -1,0 +1,24 @@
+name: deno puppeteer
+on:
+  push:
+    tags:
+      - 'puppeteer*'
+
+jobs:
+  # 构建并上传 Docker镜像
+  build: 
+    runs-on: ubuntu-latest # 依赖的环境      
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract Tag
+        id: extract_tag
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/puppeteer})"
+      - name: Build Image
+        run: |
+          docker build -t puppeteer -f Dockerfile_puppeteer .
+      - name: Tag Image
+        run: docker tag puppeteer dk.uino.cn/deno/deno_puppeteer:${{ steps.extract_tag.outputs.tag }}
+      - name: Login to Registry
+        run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
+      - name: Push Image
+        run: docker push dk.uino.cn/deno/deno_puppeteer:${{ steps.extract_tag.outputs.tag }}
