@@ -16,3 +16,8 @@ ENV USER=wasm
 RUN wasm-pack new test && cd test \
 && wasm-pack build \
 && cd .. && rm -rf test
+
+ENV TZ "Asia/Shanghai"
+ENV CARGO_HOME="/rust-cache/cargo"
+ENV RUSTC_WRAPPER="/app/sccache"
+ENV SCCACHE_DIR="/rust-cache/sccache"
