@@ -5,24 +5,20 @@ on:
       - 'wasm-pack*'
 
 jobs:
+  # 构建并上传 Docker镜像
   build: 
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest # 依赖的环境      
     steps:
       - uses: actions/checkout@v2
       - name: Extract Tag
         id: extract_tag
-        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/})"
-      - name: Check wasm-pack Tag
-        id: check_tag
-        run: echo "::set-output name=is_wasm_pack_tag::$(echo ${{ steps.extract_tag.outputs.tag }} | grep -q '^wasm-pack' && echo true || echo false)"
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/wasm-pack})"
       - name: Build Image
-        if: steps.check_tag.outputs.is_wasm_pack_tag == 'true'
         run: |
           docker build -t wasm-pack -f Dockerfile_wasm_pack .
+      - name: Tag Image
+        run: docker tag wasm-pack dk.uino.cn/runner/wasm-pack:${{ steps.extract_tag.outputs.tag }}
       - name: Login to Registry
         run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
       - name: Push Image
-        if: steps.check_tag.outputs.is_wasm_pack_tag == 'true'
-        run: |
-          docker tag wasm-pack dk.uino.cn/runner/wasm-pack:${{ steps.extract_tag.outputs.tag }}
-          docker push dk.uino.cn/runner/wasm-pack:${{ steps.extract_tag.outputs.tag }}
+        run: docker push dk.uino.cn/runner/wasm-pack:${{ steps.extract_tag.outputs.tag }}
