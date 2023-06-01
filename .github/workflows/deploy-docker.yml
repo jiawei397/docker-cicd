@@ -1,18 +1,28 @@
-name: Docker Image CI/CD
+name: deno puppeteer
 on:
   push:
-    branches: [ main ]
+    tags:
+      - 'puppeteer*'
+
 jobs:
   # 构建并上传 Docker镜像
   build: 
     runs-on: ubuntu-latest # 依赖的环境      
     steps:
       - uses: actions/checkout@v2
+      - name: Extract Tag
+        id: extract_tag
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/})"
+      - name: Check Puppeteer Tag
+        id: check_tag
+        run: echo "::set-output name=is_puppeteer_tag::$(echo ${{ steps.extract_tag.outputs.tag }} | grep -q '^puppeteer' && echo true || echo false)"
       - name: Build Image
+        if: steps.check_tag.outputs.is_puppeteer_tag == 'true'
         run: |
-          docker build -t dk.uino.cn/deno/deno_puppeteer:16.2.0-2 -f Dockerfile_puppeteer .
+          docker build -t dk.uino.cn/deno/deno_puppeteer:${{ steps.extract_tag.outputs.tag }} -f Dockerfile_puppeteer .
       - name: Login to Registry
         run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
       - name: Push Image
+        if: steps.check_tag.outputs.is_puppeteer_tag == 'true'
         run: |
-          docker push dk.uino.cn/deno/deno_puppeteer:16.2.0-2
+          docker push dk.uino.cn/deno/deno_puppeteer:${{ steps.extract_tag.outputs.tag }}
