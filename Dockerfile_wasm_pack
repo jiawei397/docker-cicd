@@ -1,0 +1,16 @@
+FROM rust:1.68-slim
+
+WORKDIR /app
+
+RUN apt-get update \
+&& apt-get -y install clang pkg-config libssl-dev wget make ca-certificates curl 
+
+RUN mkdir download && cd download \
+&& wget https://github.com/rustwasm/wasm-pack/releases/download/v0.11.1/wasm-pack-v0.11.1-x86_64-unknown-linux-musl.tar.gz && tar -xf wasm-pack-v0.11.1-x86_64-unknown-linux-musl.tar.gz -C /usr/local/bin --strip-components=1 \
+&& apt-get remove -y wget \
+&& rm -rf /var/lib/apt/lists/* && rm -rf ../download 
+
+ENV USER=wasm
+RUN wasm-pack new test && cd test \
+&& wasm-pack build \
+&& cd .. && rm -rf test
