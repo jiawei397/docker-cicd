@@ -6,6 +6,8 @@ RUN apt-get update \
 && apt-get -y install clang pkg-config libssl-dev wget make ca-certificates curl 
 
 RUN mkdir download && cd download \
+&& wget https://github.com/rui314/mold/releases/download/v1.11.0/mold-1.11.0-x86_64-linux.tar.gz && tar xzvf mold-1.11.0-x86_64-linux.tar.gz && mv mold-1.11.0-x86_64-linux ../mold \
+&& wget https://github.com/mozilla/sccache/releases/download/v0.5.0/sccache-v0.5.0-x86_64-unknown-linux-musl.tar.gz  && tar xzvf sccache-v0.5.0-x86_64-unknown-linux-musl.tar.gz && mv sccache-v0.5.0-x86_64-unknown-linux-musl/sccache ../ && chmod +x /app/sccache \ 
 && wget https://github.com/rustwasm/wasm-pack/releases/download/v0.11.1/wasm-pack-v0.11.1-x86_64-unknown-linux-musl.tar.gz && tar -xf wasm-pack-v0.11.1-x86_64-unknown-linux-musl.tar.gz -C /usr/local/bin --strip-components=1 \
 && apt-get remove -y wget \
 && rm -rf /var/lib/apt/lists/* && rm -rf ../download 
