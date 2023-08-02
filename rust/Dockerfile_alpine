@@ -1,0 +1,23 @@
+FROM rust:1.70.0-alpine3.17
+
+WORKDIR /app
+
+RUN set -eux && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+  && apk update \
+  && apk add --no-cache musl-dev pkgconfig openssl-dev clang wget make git bzip2 ca-certificates python3 bash build-base coreutils gcompat libgcc libc-dev
+
+RUN mkdir download && cd download \
+  && wget https://github.com/rui314/mold/releases/download/v1.4.0/mold-1.4.0-x86_64-linux.tar.gz && tar xzvf mold-1.4.0-x86_64-linux.tar.gz && mv mold-1.4.0-x86_64-linux ../mold \
+  && wget https://github.com/mozilla/sccache/releases/download/v0.3.0/sccache-v0.3.0-x86_64-unknown-linux-musl.tar.gz && tar xzvf sccache-v0.3.0-x86_64-unknown-linux-musl.tar.gz && mv sccache-v0.3.0-x86_64-unknown-linux-musl/sccache ../ && chmod +x /app/sccache \ 
+  && apk del -f wget \
+  && rm -rf /var/lib/apt/lists/* && rm -rf ../download 
+
+ENV TZ "Asia/Shanghai"
+ENV CARGO_HOME="/rust-cache/cargo"
+ENV RUSTC_WRAPPER="/app/sccache"
+ENV SCCACHE_DIR="/rust-cache/sccache"
+ENV UDOLPHIN_CONFIG "/udolphin/config.yaml"
+ENV PATH "/udolphin:${PATH}"
+ENV RUSTFLAGS="-C target-feature=-crt-static"
+
+CMD /bin/bash
