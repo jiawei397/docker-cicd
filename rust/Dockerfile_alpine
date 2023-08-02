@@ -2,8 +2,7 @@ FROM rust:1.70.0-alpine3.17
 
 WORKDIR /app
 
-RUN set -eux && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
-  && apk update \
+RUN apk update \
   && apk add --no-cache musl-dev pkgconfig openssl-dev clang wget make git bzip2 ca-certificates python3 bash build-base coreutils gcompat libgcc libc-dev
 
 RUN mkdir download && cd download \
