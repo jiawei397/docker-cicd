@@ -10,3 +10,5 @@ RUN apk update \
 
 RUN npm install -g pnpm
 
+# 打印pnpm版本号
+RUN echo "pnpm version: " && pnpm -v
