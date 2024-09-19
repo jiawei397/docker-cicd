@@ -1,0 +1,15 @@
+# 通过构建参数传递镜像名，默认为 node:20-alpine3.20
+ARG BASE_IMAGE=node:20-alpine3.20
+FROM ${BASE_IMAGE}
+
+# 打印Node.js版本
+RUN echo "Node.js version:" && node -v
+
+RUN apk update \
+    && apk add --no-cache git bzip2 ca-certificates python3 py3-pip \
+    && rm /var/cache/apk/*
+
+RUN npm install -g pnpm
+
+# 打印pnpm版本号
+RUN echo "pnpm version: " && pnpm -v
