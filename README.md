@@ -4,6 +4,14 @@
 
 tag 标签为：`rust-alpine1.70-0`.
 
+到[这里](https://hub.docker.com/_/rust)找镜像。
+
+- 71: 1.81.0-alpine3.20
+
+tag标签为：`rust-alpine_1.81.0-alpine3.20_1`。中间部分`1.81.0-alpine3.20`是基础镜像，最后部分用来拼接tag。
+
+最终镜像为：`rust:alpine1.81.0-1`
+
 ## npm
 
 到[这里](https://hub.docker.com/_/node/tags?page_size=&ordering=&name=20-alpine)找镜像。
