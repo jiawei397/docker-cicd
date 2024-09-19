@@ -18,7 +18,7 @@ jobs:
 
       - name: Extract Base Image
         id: extract_base_image # 1.81.0-alpine3.20
-        run: echo "base_image=rust:$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f1)" >> $GITHUB_OUTPUT
+        run: echo "base_image=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f1)" >> $GITHUB_OUTPUT
 
       - name: Extract Base Image Version
         id: extract_base_image_version # 提取出`1.81.0`
@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Image
         run: |
-          docker build --build-arg BASE_IMAGE=${{ steps.extract_base_image.outputs.base_image }} -t rust -f rust/Dockerfile_alpine .
+          docker build --build-arg BASE_IMAGE=rust:${{ steps.extract_base_image.outputs.base_image }} -t rust -f rust/Dockerfile_alpine .
 
       - name: Tag Image
         run: docker tag rust dk.uino.cn/runner/${{ steps.extract_image_tag.outputs.image_tag }}
