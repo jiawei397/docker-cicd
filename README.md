@@ -2,6 +2,8 @@
 
 ## Rust
 
+### 基础镜像
+
 tag 标签为：`rust-alpine1.70-0`.
 
 到[这里](https://hub.docker.com/_/rust)找镜像。
@@ -11,6 +13,17 @@ tag 标签为：`rust-alpine1.70-0`.
 tag标签为：`rust-alpine_1.81.0-alpine3.20_1`。中间部分`1.81.0-alpine3.20`是基础镜像，最后部分用来拼接tag。
 
 最终镜像为：`rust:alpine1.81.0-1`
+
+
+### 运行时镜像
+
+对`alpine`的封装。
+
+- alpine:3.20
+
+tag标签为：`rust-runtime_3.20_1`，中间部分`3.20`是alpine的基础镜像，最后部分用来拼接tag。
+
+最终镜像为：`rust-runtime-alpine:3.20-1`
 
 ## npm
 
