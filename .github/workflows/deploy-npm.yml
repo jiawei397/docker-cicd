@@ -18,7 +18,7 @@ jobs:
         run: echo "::set-output name=version::$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d. -f1)"
       - name: Build Image
         run: |
-          docker build -t npm -f npm/Dockerfile_${{ steps.extract_tag.outputs.version }}_alpine .
+          docker build -t npm -f npm/Dockerfile_${{ steps.extract_version.outputs.version }}_alpine .
       - name: Tag Image
         run: docker tag npm dk.uino.cn/runner/node:${{ steps.extract_tag.outputs.tag }}
       - name: Login to Registry
