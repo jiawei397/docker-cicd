@@ -2,7 +2,9 @@ name: npm
 on:
   push:
     tags:
-      - 'npm_*' # npm_18-alpine3.17_18.0.4-alpine，以下划线连接，第1段是npm，第2段是基础镜像名，也就是下面的BASE_IMAGE，第3段是要打的镜像的tag
+      - 'npm_*' 
+      # npm_18-alpine3.17_18.0.4-alpine，以下划线连接，第1段是npm，第2段是基础镜像名，也就是下面的BASE_IMAGE，第3段是要打的镜像的tag
+      # 最终推送的镜像为：node:18.0.4-alpine
 
 jobs:
   # 构建并上传 Docker镜像
@@ -17,21 +19,18 @@ jobs:
 
       - name: Extract Base Image
         id: extract_base_image
-        run: echo "base_image=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f1)" >> $GITHUB_OUTPUT
+        run: echo "base_image=node:$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f1)" >> $GITHUB_OUTPUT
 
       - name: Extract Image Tag
         id: extract_image_tag
-        run: echo "image_tag=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
+        run: echo "image_tag=node:$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
 
       - name: Build Image
         run: |
-          docker build --build-arg BASE_IMAGE=node:${{ steps.extract_base_image.outputs.base_image }} -t npm:${{ steps.extract_image_tag.outputs.image_tag }} .
-
-      - name: Tag Image
-        run: docker tag npm:${{ steps.extract_image_tag.outputs.image_tag }} dk.uino.cn/runner/node:${{ steps.extract_image_tag.outputs.image_tag }}
+          docker build --build-arg BASE_IMAGE=${{ steps.extract_base_image.outputs.base_image }} -t ${{ steps.extract_image_tag.outputs.image_tag }} -f npm/Dockerfile_alpine .
 
       - name: Login to Registry
         run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
 
       - name: Push Image
-        run: docker push dk.uino.cn/runner/node:${{ steps.extract_image_tag.outputs.image_tag }}
+        run: docker push dk.uino.cn/runner/${{ steps.extract_image_tag.outputs.image_tag }}
