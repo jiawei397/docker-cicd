@@ -1,8 +1,8 @@
-name: npm 18
+name: npm
 on:
   push:
     tags:
-      - 'npm18-*' # npm18-18.0.4-alpine
+      - 'npm-*' # npm-18.0.4-alpine
 
 jobs:
   # 构建并上传 Docker镜像
@@ -12,10 +12,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Extract Tag
         id: extract_tag
-        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/npm18-})"
+        run: echo "::set-output name=tag::$(echo ${GITHUB_REF#refs/tags/npm-})"
+      - name: Extract Version # 解析出大版本号，比如npm-18.0.4-alpine，提取出18
+        id: extract_version
+        run: echo "::set-output name=version::$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d. -f1)"
       - name: Build Image
         run: |
-          docker build -t npm -f npm/Dockerfile_18_alpine .
+          docker build -t npm -f npm/Dockerfile_${{ steps.extract_tag.outputs.version }}_alpine .
       - name: Tag Image
         run: docker tag npm dk.uino.cn/runner/node:${{ steps.extract_tag.outputs.tag }}
       - name: Login to Registry
