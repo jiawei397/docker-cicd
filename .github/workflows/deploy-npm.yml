@@ -17,11 +17,11 @@ jobs:
 
       - name: Extract Base Image
         id: extract_base_image
-        run: echo "base_image=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
+        run: echo "base_image=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f1)" >> $GITHUB_OUTPUT
 
       - name: Extract Image Tag
         id: extract_image_tag
-        run: echo "image_tag=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f3)" >> $GITHUB_OUTPUT
+        run: echo "image_tag=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
 
       - name: Build Image
         run: |
