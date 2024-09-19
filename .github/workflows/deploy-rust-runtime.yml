@@ -1,0 +1,38 @@
+name: Rust Alpine
+
+on:
+  push:
+    tags:
+      - 'rust-runtime_*' # rust-runtime_3.20_1，最终tag为：rust-runtime-alpine:3.20-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract Tag
+        id: extract_tag
+        run: echo "tag=$(echo ${GITHUB_REF#refs/tags/rust-runtime_})" >> $GITHUB_OUTPUT
+
+      - name: Extract Base Image
+        id: extract_base_image # 提取出：3.20
+        run: echo "base_image=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f1)" >> $GITHUB_OUTPUT
+
+      - name: Extract Image Tag
+        id: extract_image_tag # 拼接为：rust-runtime-alpine:3.20-1
+        run: echo "image_tag=rust-runtime-alpine:${{ steps.extract_base_image.outputs.base_image }}-$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
+
+      - name: Build Image
+        run: |
+          docker build --build-arg BASE_IMAGE=alpine:${{ steps.extract_base_image.outputs.base_image }} -t rust -f rust/Dockerfile-runtime-alpine .
+
+      - name: Tag Image
+        run: docker tag rust dk.uino.cn/runner/${{ steps.extract_image_tag.outputs.image_tag }}
+
+      - name: Login to Registry
+        run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
+
+      - name: Push Image
+        run: docker push dk.uino.cn/runner/${{ steps.extract_image_tag.outputs.image_tag }}
