@@ -1,0 +1,37 @@
+name: Pull and Push Docker Image
+
+on:
+  push:
+    tags:
+      - 'origin_*' # origin_electronuserland/builder:20-wine
+
+jobs:
+  pull-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract Tag
+        id: extract_tag
+        run: echo "tag=$(echo ${GITHUB_REF#refs/tags/origin_})" >> $GITHUB_OUTPUT
+
+      - name: Extract Image Name
+        id: extract_image_name
+        run: echo "image_name=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
+
+      - name: Pull Original Image
+        run: docker pull ${{ steps.extract_image_name.outputs.image_name }}
+
+      - name: Tag Image
+        run: |
+          image_name=$(echo ${{ steps.extract_image_name.outputs.image_name }} | tr '/' '-')
+          docker tag ${{ steps.extract_image_name.outputs.image_name }} dk.uino.cn/library/${image_name}
+
+      - name: Login to Registry
+        run: docker login --username='${{ secrets.DOCKER_USERNAME }}' --password ${{ secrets.DOCKER_PASSWORD }} dk.uino.cn
+
+      - name: Push Image
+        run: |
+          image_name=$(echo ${{ steps.extract_image_name.outputs.image_name }} | tr '/' '-')
+          docker push dk.uino.cn/library/${image_name}

@@ -40,3 +40,8 @@ tag 标签为：`npm_18-alpine3.17_18.0.5-alpine` 或 `npm_20-alpine3.20_20.0.0-
 git tag npm_18-alpine3.17_18.0.5-alpine
 git push origin npm_18-alpine3.17_18.0.5-alpine
 ```
+
+## 原生镜像
+
+比如我要拉取一个`electronuserland/builder:20-wine`镜像，那么我可以打个tag为：
+`origin_electronuserland/builder:20-wine`，最终推送的镜像为：`electronuserland-builder:20-wine`。
