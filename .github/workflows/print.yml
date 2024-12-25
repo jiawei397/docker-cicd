@@ -1,0 +1,22 @@
+name: Print Platform
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  print-platform:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Run Node.js script
+        run: node -e "console.log('Current platform:', process.platform)"
