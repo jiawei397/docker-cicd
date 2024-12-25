@@ -3,7 +3,7 @@ name: Pull and Push Docker Image
 on:
   push:
     tags:
-      - 'origin_*' # origin_electronuserland/builder:20-wine
+      - 'origin_*' # origin_electronuserland/builder@20-wine
 
 jobs:
   pull-and-push:
@@ -18,7 +18,7 @@ jobs:
 
       - name: Extract Image Name
         id: extract_image_name
-        run: echo "image_name=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2)" >> $GITHUB_OUTPUT
+        run: echo "image_name=$(echo ${{ steps.extract_tag.outputs.tag }} | cut -d_ -f2 | tr '@' ':')" >> $GITHUB_OUTPUT
 
       - name: Pull Original Image
         run: docker pull ${{ steps.extract_image_name.outputs.image_name }}
