@@ -1,16 +1,14 @@
 name: Pull and Push Docker Image
-
 on:
   push:
     tags:
       - 'origin_*' # origin_electronuserland/builder@20-wine
 
 jobs:
-  pull-and-push:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Extract Tag
         id: extract_tag
