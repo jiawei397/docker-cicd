@@ -6,10 +6,5 @@ FROM ${BASE_IMAGE}
 RUN echo "Node.js version:" && node -v
 
 RUN apk update \
-    && apk add --no-cache git bzip2 ca-certificates python3 py3-pip \
+    && apk add --no-cache git \
     && rm /var/cache/apk/*
-
-RUN npm install -g pnpm
-
-# 打印pnpm版本号
-RUN echo "pnpm version: " && pnpm -v
