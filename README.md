@@ -45,3 +45,22 @@ git push origin npm_18-alpine3.17_18.0.5-alpine
 
 比如我要拉取一个`electronuserland/builder:20-wine`镜像，那么我可以打个tag为：
 `origin_electronuserland@builder@20-wine`，最终推送的镜像为：`electronuserland-builder:20-wine`。
+
+## Electronuserland Builder 镜像（带 Node.js）
+
+基于 `electronuserland/builder` 镜像，动态安装指定版本的 Node.js 和 pnpm。
+
+tag 格式：`electronuserland_builder@<builder版本>_<node版本>`
+
+- 第 1 段（`@` 后）：builder 基础镜像版本
+- 第 2 段（`_` 后）：Node.js 主版本号
+
+例如：`electronuserland_builder@20-wine-03.25_22`
+- builder 版本：`20-wine-03.25`
+- Node.js 版本：`22`
+- 最终推送的镜像为：`electronuserland-builder:20-wine-03.25-node22`
+
+```shell
+git tag electronuserland_builder@20-wine-03.25_22
+git push origin electronuserland_builder@20-wine-03.25_22
+```
