@@ -1,9 +1,9 @@
 # 通过构建参数传递基础镜像和 Node.js 版本
 ARG BASE_IMAGE=electronuserland/builder:20-wine-03.25
-ARG NODE_VERSION=22
 
 FROM ${BASE_IMAGE}
 
+ARG NODE_VERSION=22
 
 # 安装指定版本的 Node.js（使用官方二进制包）
 RUN set -e; \
