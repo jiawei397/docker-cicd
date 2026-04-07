@@ -8,6 +8,10 @@ ARG NODE_VERSION
 
 USER root
 
+RUN rm -rf /usr/local/bin/node \
+           /usr/local/bin/npm \
+           /usr/local/lib/node_modules
+
 # 安装指定版本的 Node.js（使用官方二进制包）
 RUN set -e; \
     ARCH=$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/'); \
@@ -16,5 +20,5 @@ RUN set -e; \
     tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 && \
     rm /tmp/node.tar.xz && \
     echo "Successfully installed Node.js $(node -v)" && \
-    npm -v && \
-    npm install -g pnpm
+    npm -v 
+RUN npm install -g pnpm
