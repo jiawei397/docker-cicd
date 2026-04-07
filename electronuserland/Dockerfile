@@ -6,11 +6,10 @@ FROM ${BASE_IMAGE}
 
 # 使用 n 包升级到指定版本的 Node.js
 RUN npm install -g n \
-  && n lts/${NODE_VERSION} \
+  && n ${NODE_VERSION} \
   && node -v \
   && npm -v \
-  && npm uninstall -g n \
-  && rm -rf /usr/local/n
+  && rm -rf /usr/local/n /tmp/*
 
 # 安装 pnpm
 RUN npm install -g pnpm \
