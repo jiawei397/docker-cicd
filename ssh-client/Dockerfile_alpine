@@ -1,0 +1,11 @@
+# 通过构建参数传递镜像名，默认为 kroniak/ssh-client:3.23
+ARG BASE_IMAGE=kroniak/ssh-client:3.23
+FROM ${BASE_IMAGE}
+
+# 打印 SSH 客户端版本信息
+RUN echo "SSH Client version:" && ssh -V
+
+# 安装 zip 命令
+RUN apk update \
+    && apk add --no-cache zip \
+    && rm /var/cache/apk/*
