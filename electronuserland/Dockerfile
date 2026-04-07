@@ -5,21 +5,25 @@ ARG NODE_VERSION=22
 FROM ${BASE_IMAGE}
 
 # 安装指定版本的 Node.js（使用官方二进制包）
-RUN ARCH=$(uname -m) \
-    && if [ "$ARCH" = "x86_64" ]; then ARCH="x64"; elif [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi \
-    # 改进 JS 逻辑：增加错误检查，并确保匹配到正确的大版本
-    && echo "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); \
-       const v=d.find(x => x.version.startsWith('v' + process.argv[1] + '.')); \
-       if(!v) { console.error('Version not found'); process.exit(1); } \
-       console.log(v.version.slice(1));" > /tmp/get_node_ver.js \
-    # 执行解析
-    && NODE_VERSION_FULL=$(curl -fsSL https://nodejs.org/dist/index.json | node /tmp/get_node_ver.js "${NODE_VERSION}") \
-    && echo "Installing Node.js v${NODE_VERSION_FULL} for ${ARCH}" \
-    # 下载并解压
-    && curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION_FULL}/node-v${NODE_VERSION_FULL}-linux-${ARCH}.tar.xz" | tar -xJ -C /usr/local --strip-components=1 \
-    # 清理并验证
-    && rm /tmp/get_node_ver.js \
-    && node -v && npm -v
+RUN set -e; \
+    # 自动获取架构 (x64 或 arm64)
+    ARCH=$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/'); \
+    \
+    # 2. 直接从官网 index.tab 获取最新小版本号 (tab文件比json更好解析)
+    # index.tab 的第一列是版本号，形如 v22.14.0
+    echo "Checking for latest Node.js v${NODE_VERSION}..." && \
+    FULL_VERSION=$(curl -fsSL https://nodejs.org/dist/index.tab | grep -E "^v${NODE_VERSION}\." | head -n 1 | cut -f 1) && \
+    \
+    if [ -z "$FULL_VERSION" ]; then echo "Could not find version v${NODE_VERSION}"; exit 1; fi; \
+    echo "Found full version: ${FULL_VERSION}"; \
+    \
+    # 3. 下载并解压到 /usr/local
+    curl -fsSL "https://nodejs.org/dist/${FULL_VERSION}/node-${FULL_VERSION}-linux-${ARCH}.tar.xz" -o /tmp/node.tar.xz && \
+    tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 && \
+    \
+    # 4. 清理
+    rm /tmp/node.tar.xz && \
+    node -v && npm -v
 
 # 安装 pnpm
 RUN npm install -g pnpm \
