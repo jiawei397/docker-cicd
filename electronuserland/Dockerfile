@@ -16,8 +16,5 @@ RUN set -e; \
     tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 && \
     rm /tmp/node.tar.xz && \
     echo "Successfully installed Node.js $(node -v)" && \
-    npm -v
-
-# 安装 pnpm
-RUN npm install -g pnpm \
-  && pnpm -v
+    npm -v && \
+    npm install -g pnpm
