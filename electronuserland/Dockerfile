@@ -6,7 +6,7 @@ FROM ${BASE_IMAGE}
 
 # 使用 n 包升级到指定版本的 Node.js
 RUN npm install -g n \
-  && n ${NODE_VERSION} \
+  && n lts/${NODE_VERSION} \
   && node -v \
   && npm -v \
   && npm uninstall -g n \
