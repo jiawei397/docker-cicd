@@ -6,6 +6,8 @@ FROM ${BASE_IMAGE}
 
 ARG NODE_VERSION
 
+USER root
+
 # 安装指定版本的 Node.js（使用官方二进制包）
 RUN set -e; \
     ARCH=$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/'); \
