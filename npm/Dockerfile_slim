@@ -6,5 +6,6 @@ FROM ${BASE_IMAGE}
 RUN echo "Node.js version:" && node -v
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git zip unzip curl jq \
+    && apt-get install -y --no-install-recommends git zip unzip curl jq python3 python3-pip build-essential \
+    && ln -sf /usr/bin/python3 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
