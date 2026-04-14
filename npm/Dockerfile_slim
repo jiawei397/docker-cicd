@@ -1,0 +1,10 @@
+# 通过构建参数传递镜像名，默认为 node:22-slim
+ARG BASE_IMAGE=node:22-slim
+FROM ${BASE_IMAGE}
+
+# 打印Node.js版本
+RUN echo "Node.js version:" && node -v
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git zip unzip curl jq \
+    && rm -rf /var/lib/apt/lists/*
