@@ -64,3 +64,25 @@ tag 格式：`electronuserland_builder@<builder版本>_<node完整版本>`
 git tag electronuserland_builder@20-wine-03.25_22.22.2
 git push origin electronuserland_builder@20-wine-03.25_22.22.2
 ```
+
+## CentOS 开发环境镜像
+
+基于 CentOS 7 基础镜像，安装常用的开发工具和库。
+
+tag 格式：`centos_<CentOS版本>_<自定义标识>_<版本号>`
+
+- 第 1 段：`centos`（固定前缀）
+- 第 2 段：CentOS 版本号（如 7）
+- 第 3 段：自定义标识，描述安装的软件包
+- 第 4 段：版本号，用于后续更新
+
+例如：`centos_7_dev-tools_1`
+- CentOS 版本：`7`
+- 自定义标识：`dev-tools`（安装了 gcc、glibc-devel、zlib-devel、fontconfig）
+- 版本号：`1`
+- 最终推送的镜像为：`${{ secrets.DOCKER_USERNAME }}/centos:7-dev-tools-1`
+
+```shell
+git tag centos_7_dev-tools_1
+git push origin centos_7_dev-tools_1
+```
